@@ -1,6 +1,6 @@
 ---
 - hosts: webservers
-  become: yes
+  become: true
   tasks:
     - name: Upgrade System
       apt: upgrade=dist update_cache=yes
@@ -8,12 +8,12 @@
     - name: install Nginx server
       apt:
         name: nginx
-        state: latest
+        state: present
 
     - name: Start nginx
       service:
         name: nginx
-        enabled: yes
+        enabled: true
         state: started
 
     - name: Install Certbot's Nginx package
@@ -31,17 +31,19 @@
         rule: allow
         port: "443"
 
-    - name: Check if certificate already exists.
+    - name: Check if certificate already exists
       stat:
-        path: /etc/letsencrypt/live/{{ inventory_hostname}}/cert.pem
+        path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
       register: letsencrypt_cert
 
     - name: Generate new certificate if one doesn't exist.
-      shell: "certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link -d {{ inventory_hostname}}"
-      when: letsencrypt_cert.stat.exists == False
+      when: not letsencrypt_cert.stat.exists
+      shell: >-
+        certbot --nginx --noninteractive --agree-tos
+          --email notacult@bonfire.link -d {{ inventory_hostname }}
 
 - hosts: logservers
-  become: yes
+  become: true
   tasks:
     - name: configure rsyslog remote log reception over udp
       lineinfile:
@@ -55,12 +57,12 @@
         - restart rsyslogd
 
 - hosts: all
-  become: yes
+  become: true
   tasks:
     - name: install ufw
       apt:
         name: ufw
-        state: latest
+        state: present
 
     - name: Allow ssh
       ufw:

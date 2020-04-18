@@ -1,40 +1,46 @@
 ---
 - hosts: streamingservers
-  become: yes
+  become: true
   tasks:
     - name: show the fqdn
       debug: msg={{ tv_fqdn }}
-    - name: ensure nginx is at the latest version
-      apt: name=nginx state=latest
-    - name: install nginx rtmp module
-      apt: name=libnginx-mod-rtmp state=latest
+    - name: ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+    - name: ensure nginx rtmp module is installed
+      apt:
+        name: libnginx-mod-rtmp
+        state: present
     - name: copy the nginx config file for TV site
       copy:
         src: ../config/nginx/tv_site.cfg
-        dest: "/etc/nginx/sites-available/{{tv_fqdn}}.cfg"
-        force: yes
+        dest: "/etc/nginx/sites-available/{{ tv_fqdn }}.cfg"
+        force: true
     - name: copy the nginx config file for RTMP stream
       blockinfile:
         block: "{{ lookup('file', '../config/nginx/tv_stream.cfg') }}"
         dest: "/etc/nginx/nginx.conf"
     - name: create symlink for TV site
       file:
-        src: "/etc/nginx/sites-available/{{tv_fqdn}}.cfg"
-        dest: "/etc/nginx/sites-enabled/{{tv_fqdn}}.cfg"
+        src: "/etc/nginx/sites-available/{{ tv_fqdn }}.cfg"
+        dest: "/etc/nginx/sites-enabled/{{ tv_fqdn }}.cfg"
         state: link
     - name: Check if certificate already exists.
       stat:
-        path: /etc/letsencrypt/live/{{tv_fqdn}}/cert.pem
+        path: /etc/letsencrypt/live/{{ tv_fqdn }}/cert.pem
       register: letsencrypt_cert
 
-    - name: Generate new certificate if one doesn't exist.
-      shell: "certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link -d {{ tv_fqdn}}"
-      when: letsencrypt_cert.stat.exists == False
+    - name: Generate new certificate if one doesn't exist
+      when: not letsencrypt_cert.stat.exists
+      shell: >-
+        certbot --nginx --noninteractive --agree-tos
+          --email notacult@bonfire.link -d {{ tv_fqdn }}
     - name: Create the hls dump folder
       file:
         path: /tmp/hls
         state: directory
-        mode: 777
+        mode: 0777
     - name: Allow rtmp in firewall
       ufw:
         rule: allow
