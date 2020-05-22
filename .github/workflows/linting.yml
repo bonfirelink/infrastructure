@@ -1,0 +1,60 @@
+---
+name: linting
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  # Required for reproducible venv path
+  PIPENV_VENV_IN_PROJECT: 1
+
+jobs:
+  setup:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        id: cache
+        with:
+          path: .venv
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+      - name: Set up Python 2.7
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 2.7.18
+      - name: Install pipenv
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install --upgrade pip
+          pip install pipenv
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pipenv run -- make setup
+
+  lint:
+    needs: setup
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: .venv
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+      - name: Set up Python 2.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 2.7
+      - name: Set up pipenv
+        run: |
+          pip install --upgrade pip
+          pip install pipenv
+      - name: Run linters
+        run: |
+          pipenv run -- make lint

@@ -1,5 +1,7 @@
 # bonfire.link infrastructure as code
 
+[![](https://github.com/bonfirelink/infrastructure/workflows/linting/badge.svg?branch=master)](https://github.com/bonfirelink/infrastructure/actions?query=workflow%3Alinting+branch%3Amaster)
+
 This repository contains Ansible playbooks to deploy all bonfire.link infrastructure.
 
 ## usage
