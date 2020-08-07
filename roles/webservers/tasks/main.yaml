@@ -25,7 +25,6 @@
     dest: /etc/nginx/sites-enabled/landing.cfg
     state: link
 
-<<<<<<< HEAD
 - name: Ensure directory exists
   file:
     path: /var/www/www.bonfire.link
@@ -38,8 +37,6 @@
     remote_src: yes
     extra_opts: [--strip-components=1]
 
-=======
->>>>>>> Flesh out webservers role
 - name: Restart nginx
   service:
     name: nginx
@@ -59,4 +56,8 @@
 - name: Generate new certificate if one doesn't exist.
   when: not letsencrypt_cert.stat.exists
   shell: >-
+<<<<<<< HEAD
     certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link -d bonfire.link -d www.bonfire.link
+=======
+    certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link --domains {{ inventory_hostname }}
+>>>>>>> remove newline char
