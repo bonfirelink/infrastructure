@@ -25,6 +25,19 @@
     dest: /etc/nginx/sites-enabled/landing.cfg
     state: link
 
+- name: Ensure directory exists
+  file:
+    path: /var/www/www.bonfire.link
+    state: directory
+
+- name: Deploy landing website
+  unarchive:    
+    src: https://github.com/bonfirelink/websites/archive/landing/v1.0.0-latest.tar.gz
+    dest: /var/www/www.bonfire.link/
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+
 - name: Restart nginx
   service:
     name: nginx
