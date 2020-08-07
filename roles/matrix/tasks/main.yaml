@@ -2,7 +2,12 @@
 - name: Install matrix
   apt:
     name: matrix-synapse
-    state: present
+    state: present    
+
+- name: UFW Allow Http
+  ufw:
+    rule: allow
+    port: "{{ http_port }}"
 
 - name: UFW Allow Https
   ufw:
@@ -14,3 +19,40 @@
     src: homeserver.yaml
     dest: /etc/matrix-synapse/homeserver.yaml
     backup: True
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Deploy nginx config
+  copy:
+    src: matrix.cfg
+    dest: /etc/nginx/sites-available/
+
+- name: Enable nginx config
+  file:
+    src: /etc/nginx/sites-available/matrix.cfg
+    dest: /etc/nginx/sites-enabled/matrix.cfg
+    state: link
+
+- name: Restart nginx
+  service:
+    name: nginx
+    enabled: true
+    state: restarted
+
+- name: Install Certbot's Nginx package
+  apt:
+    name: python-certbot-nginx
+    state: present
+
+- name: Check if certificate already exists
+  stat:
+    path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Generate new certificate if one doesn't exist.
+  when: not letsencrypt_cert.stat.exists
+  shell: >-
+    certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link --domains {{ inventory_hostname }}
