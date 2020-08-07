@@ -4,7 +4,7 @@
     name: matrix-synapse
     state: present
 
-- name: UFW Allow Matrix
+- name: UFW Allow Https
   ufw:
     rule: allow    
-    port: "8448"
+    port: "{{ https_port }}"
