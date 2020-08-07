@@ -1,0 +1,16 @@
+---
+- name: Allow ssh
+  ufw:
+    rule: allow
+    name: ssh
+
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+
+- name: Deny everything else and enable UFW
+  ufw:
+    state: enabled
+    policy: deny
+    logging: "off"
