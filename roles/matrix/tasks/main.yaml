@@ -2,7 +2,7 @@
 - name: Install matrix
   apt:
     name: matrix-synapse
-    state: present    
+    state: present
 
 - name: UFW Allow Http
   ufw:
