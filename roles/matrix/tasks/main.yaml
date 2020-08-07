@@ -13,3 +13,4 @@
   copy:
     src: homeserver.yaml
     dest: /etc/matrix-synapse/homeserver.yaml
+    backup: True
