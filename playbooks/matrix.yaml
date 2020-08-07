@@ -1,0 +1,5 @@
+---
+- hosts: matrixservers
+  become: yes
+  roles:
+    - common

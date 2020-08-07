@@ -12,7 +12,13 @@ Make sure to have the following software installed in your machine before contin
 To deploy the whole bonfire.link infrastructure, run:
 
 ```sh
-ansible-playbook -i hosts/prod playbooks/bonfirelink.yaml
+ansible-playbook -i hosts/prod bonfirelink.yaml
+```
+
+To deploy specific machines:
+
+```sh
+ansible-playbook -i hosts/prod playbooks/<playbook-filename>
 ```
 
 > **NOTE:** At the moment, your ssh keys need to be manually authorized server-side beforehand.
