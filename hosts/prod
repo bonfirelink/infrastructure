@@ -1,8 +1,11 @@
 [webservers]
-tv.bonfire.link
+abraham.bonfire.link
+
+[matrixdelegationservers]
+abraham.bonfire.link
 
 [streamingservers]
-tv.bonfire.link
+sandbox.bonfire.link
 
 [fileservers]
 sandbox.bonfire.link
@@ -10,11 +13,16 @@ sandbox.bonfire.link
 [logservers]
 sandbox.bonfire.link
 
+[matrixservers]
+balaam.bonfire.link
+
 [bonfirelink:children]
 webservers
 streamingservers
 fileservers
 logservers
+matrixservers
+matrixdelegationservers
 
 [webservers:vars]
 ansible_python_interpreter=/usr/bin/python3
