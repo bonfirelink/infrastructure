@@ -1,0 +1,42 @@
+---
+- name: Upgrade System
+  apt:
+    upgrade: dist
+    update_cache: yes
+
+- name: Allow http
+  ufw:
+    rule: allow
+    port: "80"
+
+- name: Allow https
+  ufw:
+    rule: allow
+    port: "443"
+
+- name: Install  Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Start nginx
+  service:
+    name: nginx
+    enabled: true
+    state: started
+
+- name: Install Certbot's Nginx package
+  apt:
+    name: python-certbot-nginx
+    state: present
+
+- name: Check if certificate already exists
+  stat:
+    path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Generate new certificate if one doesn't exist.
+  when: not letsencrypt_cert.stat.exists
+  shell: >-
+    certbot --nginx --noninteractive --agree-tos
+      --email notacult@bonfire.link -d {{ inventory_hostname }}
