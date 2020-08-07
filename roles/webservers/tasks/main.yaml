@@ -25,6 +25,7 @@
     dest: /etc/nginx/sites-enabled/landing.cfg
     state: link
 
+<<<<<<< HEAD
 - name: Ensure directory exists
   file:
     path: /var/www/www.bonfire.link
@@ -37,6 +38,8 @@
     remote_src: yes
     extra_opts: [--strip-components=1]
 
+=======
+>>>>>>> Flesh out webservers role
 - name: Restart nginx
   service:
     name: nginx
