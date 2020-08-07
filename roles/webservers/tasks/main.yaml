@@ -14,7 +14,7 @@
     rule: allow
     port: "443"
 
-- name: Install  Nginx
+- name: Install Nginx
   apt:
     name: nginx
     state: present
