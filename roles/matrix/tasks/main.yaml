@@ -1,0 +1,9 @@
+- name: Install matrix
+  apt:
+    name: matrix-synapse
+    state: present
+
+- name: UFW Allow Matrix
+  ufw:
+    rule: allow    
+    port: "8448"
