@@ -6,5 +6,5 @@
 
 - name: UFW Allow Https
   ufw:
-    rule: allow    
+    rule: allow
     port: "{{ https_port }}"
