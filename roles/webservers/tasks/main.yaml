@@ -2,23 +2,34 @@
 - name: Allow http
   ufw:
     rule: allow
-    port: "80"
+    port: "{{ http_port }}"
 
 - name: Allow https
   ufw:
     rule: allow
-    port: "443"
+    port: "{{ https_port }}"
 
-- name: Install Nginx
+- name: Install nginx
   apt:
     name: nginx
     state: present
 
-- name: Start nginx
+- name: Deploy nginx config
+  template:
+    src: landing.cfg
+    dest: /etc/nginx/sites-available/landing.cfg
+
+- name: Enable nginx config
+  file:
+    src: /etc/nginx/sites-available/landing.cfg
+    dest: /etc/nginx/sites-enabled/landing.cfg
+    state: link
+
+- name: Restart nginx
   service:
     name: nginx
     enabled: true
-    state: started
+    state: restarted
 
 - name: Install Certbot's Nginx package
   apt:
