@@ -1170,6 +1170,7 @@ oidc_config:
       #
       # This must be configured if using the default mapping provider.
       #
+      
       localpart_template: "{{ user.preferred_username }}"
 
       # Jinja2 template for the display name to set on first login.

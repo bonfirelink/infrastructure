@@ -8,3 +8,8 @@
   ufw:
     rule: allow
     port: "{{ https_port }}"
+
+- name: Deploy matrix config
+  copy:
+    src: homeserver.yaml
+    dest: /etc/matrix-synapse/homeserver.yaml
