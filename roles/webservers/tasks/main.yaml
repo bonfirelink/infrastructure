@@ -50,10 +50,10 @@
 
 - name: Check if certificate already exists
   stat:
-    path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+    path: /etc/letsencrypt/live/bonfire.link/cert.pem
   register: letsencrypt_cert
 
 - name: Generate new certificate if one doesn't exist.
   when: not letsencrypt_cert.stat.exists
   shell: >-
-    certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link --domains {{ inventory_hostname }}
+    certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link -d bonfire.link -d www.bonfire.link

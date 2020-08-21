@@ -14,6 +14,11 @@
     rule: allow
     port: "{{ https_port }}"
 
+- name: UFW Allow Matrix federation port
+  ufw:
+    rule: allow
+    port: "8448"
+
 - name: Deploy matrix config
   copy:
     src: homeserver.yaml
