@@ -1,0 +1,10 @@
+---
+- name: Create delegation folder
+  file:
+    path: /var/www/www.bonfire.link/.well-known/matrix
+    state: directory
+
+- name: Copy matrix delegation config to webserver filestructure
+  template:
+    src: delegation.json
+    dest: /var/www/www.bonfire.link/.well-known/matrix/server

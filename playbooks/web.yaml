@@ -4,3 +4,6 @@
   roles:
     - common
     - webservers
+  tasks:
+    - name: Import delegation task
+      import_tasks: ../roles/matrix/tasks/delegation.yaml
