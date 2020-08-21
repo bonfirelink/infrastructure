@@ -56,8 +56,4 @@
 - name: Generate new certificate if one doesn't exist.
   when: not letsencrypt_cert.stat.exists
   shell: >-
-<<<<<<< HEAD
     certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link -d bonfire.link -d www.bonfire.link
-=======
-    certbot --nginx --noninteractive --agree-tos --email notacult@bonfire.link --domains {{ inventory_hostname }}
->>>>>>> remove newline char
