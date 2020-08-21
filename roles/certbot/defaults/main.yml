@@ -1,0 +1,16 @@
+---
+certbot_admin_email: admin@bonfire.link
+certbot_certs: []
+# - email: janedoe@example.com
+#   domains:
+#     - example1.com
+#     - example2.com
+# - domains:
+#     - example3.com
+
+certbot_standalone_command: >-
+  {{ certbot_script }} certonly --standalone --noninteractive --agree-tos
+  --email {{ cert.email | default(certbot_admin_email) }}
+  --domains {{ cert.domains | join(',') }}
+  --pre-hook "systemctl stop nginx"
+  --post-hook "systemctl start nginx"

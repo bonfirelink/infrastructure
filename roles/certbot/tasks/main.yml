@@ -1,0 +1,13 @@
+---
+- name: Install certbot
+  package:
+    name: "{{ certbot_package }}"
+    state: present
+
+- name: Generate certificate
+  command: "{{ certbot_standalone_command }}"
+  with_items: "{{ certbot_certs }}"
+  loop_control:
+    loop_var: cert
+  register: certbot_standalone_update
+  changed_when: "'Your certificate and chain have been saved' in certbot_standalone_update.stdout"
