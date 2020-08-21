@@ -23,11 +23,11 @@ jobs:
         with:
           path: .venv
           key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-      - name: Set up Python 2.7
+      - name: Set up Python 3.7
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-python@v1
         with:
-          python-version: 2.7.18
+          python-version: 3.7
       - name: Install pipenv
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -47,10 +47,10 @@ jobs:
         with:
           path: .venv
           key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-      - name: Set up Python 2.7
+      - name: Set up Python 3.7
         uses: actions/setup-python@v1
         with:
-          python-version: 2.7
+          python-version: 3.7
       - name: Set up pipenv
         run: |
           pip install --upgrade pip
