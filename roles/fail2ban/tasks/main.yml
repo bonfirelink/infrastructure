@@ -1,0 +1,51 @@
+---
+- name: include assert.yml
+  include_tasks: assert.yml
+
+- name: install fail2ban
+  package:
+    name: "{{ fail2ban_package }}"
+    state: present
+
+- name: configure fail2ban.conf
+  ini_file:
+    path: /etc/fail2ban/fail2ban.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop: "{{ fail2ban_base_configuration + fail2ban_configuration }}"
+  loop_control:
+    label: "{{ item.option }}"
+  notify:
+    - restart fail2ban
+
+- name: configure jail.local
+  ini_file:
+    path: /etc/fail2ban/jail.local
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop: "{{ fail2ban_base_jail_configuration + fail2ban_jail_configuration }}"
+  loop_control:
+    label: "{{ item.option }}"
+  notify:
+    - restart fail2ban
+
+- name: stat auth log file
+  stat:
+    path: /var/log/auth.log
+  register: fail2ban_auth
+
+- name: touch auth log file
+  file:
+    path: /var/log/auth.log
+    state: touch
+  when:
+    - fail2ban_auth.stat.exists is defined
+    - not fail2ban_auth.stat.exists
+
+- name: start and enable fail2ban
+  service:
+    name: "{{ fail2ban_service }}"
+    state: started
+    enabled: true
