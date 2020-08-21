@@ -5,5 +5,6 @@
     - common
     - webservers
   tasks:
-    - name: Import delegation task
-      import_tasks: ../roles/matrix/tasks/delegation.yaml
+    - import_role:
+        name: matrix
+        tasks_from: delegation
