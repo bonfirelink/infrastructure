@@ -12,7 +12,10 @@
     state: present
 
 - name: Create bridge Directory
-  file: path=/opt/matrix-bridge state=directory owner=simon
+  file:
+    path: /opt/matrix-bridge
+    state: directory
+    owner: simon
 
 - name: Pull the bridge repository
   git:
@@ -46,7 +49,10 @@
 
 
 - name: Install pm2
-  npm: name=pm2 global=yes production=yes
+  npm:
+    name: pm2
+    global: yes
+    production: yes
 
 - name: Stop bridge
   command: pm2 stop npm
