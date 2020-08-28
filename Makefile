@@ -4,6 +4,5 @@ setup:
 
 .PHONY: lint
 lint:
-	pipenv run --\
-		yamllint .&&\
-		ansible-lint
+	pipenv run -- yamllint .
+	pipenv run -- ansible-lint
