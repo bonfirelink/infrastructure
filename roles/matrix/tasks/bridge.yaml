@@ -1,0 +1,58 @@
+---
+- name: Install Packages
+  apt:
+    name: ['build-essential', 'git', 'mcrypt', 'curl']
+    
+- name: Add node to deb repos
+  shell: "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -"
+
+- name: Install node
+  apt:
+    name: nodejs
+    state: present
+
+- name: Create bridge Directory
+  file: path=/opt/matrix-bridge state=directory owner=simon
+
+- name: Pull the bridge repository
+  git:
+    repo: "https://github.com/Half-Shot/matrix-appservice-discord.git"
+    dest: /opt/matrix-bridge
+  become_user: simon
+
+- name: Install bridge npm packages
+  npm:
+    path: /opt/matrix-bridge
+  become_user: simon
+
+- name: Deploy bridge config
+  copy:
+    src: bridge_config.yaml
+    dest: /opt/matrix-bridge/config.yaml
+    owner: simon
+
+- name: Create discord registration file
+  shell: 
+    cmd: node build/src/discordas.js -r -u "http://localhost:9005" -c config.yaml
+    chdir: /opt/matrix-bridge
+  become_user: simon
+
+- name: Copy registration file to synapse
+  copy:
+    src: /opt/matrix-bridge/discord-registration.yaml
+    remote_src: yes
+    dest: /etc/matrix-synapse
+    owner: simon
+
+
+- name: Install pm2
+  npm: name=pm2 global=yes production=yes
+
+- name: Stop bridge
+  command: pm2 stop npm
+  ignore_errors: yes
+
+- name: Start bridge
+  sudo_user: simon
+  command: pm2 start npm -- start chdir=/opt/matrix-bridge
+  ignore_errors: yes

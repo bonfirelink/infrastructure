@@ -1,4 +1,7 @@
 ---
+- name: include bridge.yml
+  include_tasks: bridge.yaml  
+
 - name: Install matrix
   apt:
     name: matrix-synapse

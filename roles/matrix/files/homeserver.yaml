@@ -292,7 +292,7 @@ listeners:
       # - '0.0.0.0'
     type: http
 
-    x_forwarded: false
+    x_forwarded: true
 
     resources:
       - names: [client]
@@ -832,7 +832,8 @@ room_invite_state_types:
 
 
 # A list of application service config file to use
-app_service_config_files: []
+app_service_config_files:
+  - "/etc/matrix-synapse/discord-registration.yaml"
 
 
 # macaroon_secret_key: <PRIVATE STRING>
@@ -1418,3 +1419,4 @@ enable_group_creation: false
 #
 #user_directory:
 #   search_all_users: false
+
