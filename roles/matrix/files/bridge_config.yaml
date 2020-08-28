@@ -68,7 +68,7 @@ room:
 channel:
     # Pattern of the name given to bridged rooms.
     # Can use :guild for the guild name and :name for the channel name.
-    namePattern: "[Discord] :guild :name"
+    namePattern: ":guild :name"
     # Changes made to rooms when a channel is deleted.
     deleteOptions:
        # Prefix the room name with a string.
