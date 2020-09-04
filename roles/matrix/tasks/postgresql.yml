@@ -1,0 +1,42 @@
+---
+
+# based on https://github.com/matrix-org/synapse/blob/master/docs/postgres.rst
+
+- name: install postgresql and dependencies
+  apt:
+    name:
+      - postgresql
+      - libpq-dev
+      - python3-psycopg2
+    state: present
+
+- name: ensure postgresql service is started
+  service:
+    name: postgresql
+    state: started
+
+- name: install synapse postgresql library
+  pip:
+    name: matrix-synapse[postgres]
+    chdir: "{{ synapse_installation_path }}"
+    virtualenv: "{{ synapse_installation_path }}/env"
+    virtualenv_python: python3
+    state: present
+
+- name: create postgresql user
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ synapse_psql_user }}"
+    password: "{{ synapse_psql_password }}"
+
+- name: create postgresql database
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ synapse_psql_db_name }}"
+    encoding: UTF-8
+    lc_collate: C
+    lc_ctype: C
+    template: template0
+    owner: "{{ synapse_psql_user }}"

@@ -1,0 +1,84 @@
+---
+
+# based on https://github.com/matrix-org/synapse/blob/master/INSTALL.md#installing-synapse
+
+- name: install synapse dependencies
+  apt:
+    name:
+      - build-essential
+      - python3-dev
+      - libffi-dev
+      - python-pip
+      - python-setuptools
+      - sqlite3
+      - libssl-dev
+      - python-virtualenv
+      - libjpeg-dev
+      - libxslt1-dev
+    state: present
+    update_cache: true
+
+- name: upgrade pip and setuptools
+  pip:
+    name:
+      - pip
+      - setuptools
+      - virtualenv
+    state: latest  # noqa 403
+
+- name: create synapse directory
+  file:
+    path: "{{ synapse_installation_path }}"
+    state: directory
+    owner: "{{ matrix_user }}"
+    mode: 0755
+
+- name: install or update synapse using pip
+  pip:
+    name: "{{ matrix_user }}"
+    chdir: "{{ synapse_installation_path }}"
+    virtualenv: "{{ synapse_installation_path }}/env"
+    virtualenv_python: python3
+    state: "{{ synapse_pip_state }}"
+  notify: restart matrix-synapse
+
+- name: generate homeserver configuration
+  template:
+    src: homeserver.yaml.j2
+    dest: "{{ synapse_installation_path }}/homeserver.yaml"
+    mode: 0644
+    owner: root
+    group: root
+
+- name: create config folder
+  file:
+    path: "{{ synapse_installation_path }}/conf.d"
+    state: directory
+    mode: 0755
+
+- name: create matrix-synapse.service
+  template:
+    src: matrix-synapse.service.j2
+    dest: /lib/systemd/system/matrix-synapse.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: reload systemctl daemon
+
+- name: enable matrix-synapse.service
+  systemd:
+    name: matrix-synapse.service
+    enabled: true
+
+- name: generate custom configurations
+  template:
+    src: "conf.d/{{ item }}.yaml.j2"
+    dest: "{{ synapse_installation_path }}/conf.d/{{ item }}.yaml"
+    mode: 0644
+    owner: root
+    group: root
+  loop:
+    - custom
+    - database
+    - registration
+  notify: restart matrix-synapse

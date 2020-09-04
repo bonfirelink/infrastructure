@@ -1,0 +1,13 @@
+[Unit]
+Description=Matrix Appservice Discord
+
+[Service]
+Type=simple
+User={{ matrix_user }}
+WorkingDirectory={{ discord_bridge_installation_path }}
+ExecStart=npm start
+ExecReload=/bin/kill -HUP $MAINPID
+SyslogIdentifier=discord-bridge
+
+[Install]
+WantedBy=multi-user.target
