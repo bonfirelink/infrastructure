@@ -1,0 +1,82 @@
+---
+
+- name: add nodejs to apt repositories
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  loop:
+    - deb https://deb.nodesource.com/node_14.x buster main
+    - deb-src https://deb.nodesource.com/node_14.x buster main
+
+- name: install discord bridge system dependencies
+  apt:
+    name:
+      - build-essential
+      - curl
+      - git
+      - mcrypt
+      - nodejs
+    state: present
+    update_cache: true
+
+- name: create discord bridge directory
+  file:
+    path: "{{ discord_bridge_installation_path }}"
+    state: directory
+    owner: "{{ matrix_user }}"
+    mode: 0755
+
+- name: pull discord bridge repository
+  become: true
+  become_user: "{{ matrix_user }}"
+  git:
+    repo: "https://github.com/Half-Shot/matrix-appservice-discord.git"
+    dest: "{{ discord_bridge_installation_path }}"
+    version: master
+
+- name: install discord bridge npm packages
+  become: true
+  become_user: "{{ matrix_user }}"
+  npm:
+    path: "{{ discord_bridge_installation_path }}"
+
+- name: generate discord bridge configuration
+  template:
+    src: discord-bridge.yaml.j2
+    dest: "{{ discord_bridge_installation_path }}/config.yaml"
+    mode: 0644
+    owner: root
+    group: root
+
+- name: create discord-bridge.service
+  template:
+    src: discord-bridge.service.j2
+    dest: /lib/systemd/system/discord-bridge.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: reload systemctl daemon
+
+- name: enable discord-bridge.service
+  systemd:
+    name: discord-bridge.service
+    enabled: true
+
+- name: stat discord registration file
+  stat:
+    path: "{{ discord_bridge_installation_path }}/{{ discord_registration_filename }}"
+  register: discord_registration
+
+- name: generate discord bridge registration file
+  when: discord_registration.stat.exists is not defined
+  become: true
+  become_user: "{{ matrix_user }}"
+  command:
+    cmd: node build/src/discordas.js -r -u "http://localhost:9005" -c config.yaml
+    chdir: "{{ discord_bridge_installation_path }}"
+  notify: restart matrix-synapse
+
+- name: start discord bridge
+  service:
+    name: discord-bridge
+    state: restarted

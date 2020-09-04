@@ -1,0 +1,60 @@
+---
+##########################
+##### Synapse server #####
+##########################
+
+# Our friendly and public domain name for the Synapse
+# server (the one that conforms user ID and room alias)
+# eg: my-organization.org (you would get @users:my-organization.org and #rooms:my-organization.org)
+synapse_server_name: "{{ inventory_hostname }}"
+
+# FQDN of the server that effectively hosting synapse (matrix endpoint)
+# eg: matrix.my-organization.org
+synapse_server_fqdn: "{{ inventory_hostname }}"
+
+# Location where synapse will be downloaded and installed from PyPI
+synapse_installation_path: /var/lib/matrix-synapse
+
+# present : Keep the same version once synapse was installed or
+# latest : upgrade it if there is a new upgrade available from pip
+# IF YOU PLAN TO UPGRADE, CHECK FIRST: https://github.com/matrix-org/synapse/blob/master/UPGRADE.rst
+synapse_pip_state: present
+
+# Enable sign up for new users
+synapse_enable_registration: false
+synapse_enable_registration_with_captcha: false
+synapse_recaptcha_public_key: 2Q1toXytnLYl4WIrpWgvBJOaQS1Ym36tNAJnKcZY
+synapse_recaptcha_private_key: QgsOB0r79J9fpn8fAAnEIiITv7IMnjnUftdJwThs
+
+synapse_report_stats: 'no'
+
+# The largest allowed upload size in bytes
+synapse_max_upload_size: 10M
+
+# Local sources to templates and configuration files, useful
+# for overwriting if you want to use your own templates in conf.d
+synapse_confd_templates_src: var/lib/matrix-synapse/conf.d
+
+##########################
+##### Discord bridge #####
+##########################
+
+# Location where the Discord bridge will be downloaded and installed from git
+discord_bridge_installation_path: /var/lib/matrix-discord-bridge
+
+# Discord app auth
+discord_bridge_client_id: 1234
+discord_bridge_bot_token: foobar
+
+#######################
+####### Database ######
+#######################
+
+# Install and configure Synapse with PostgreSQL Server, instead of SQLite.
+synapse_with_postgresql: false
+
+# PostgreSQL credentials
+synapse_psql_db_name: matrix-synapse
+synapse_psql_db_host: localhost
+synapse_psql_user: matrix-synapse
+synapse_psql_password: secret-password

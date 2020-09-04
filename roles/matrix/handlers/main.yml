@@ -1,0 +1,14 @@
+---
+- name: restart matrix-synapse
+  service:
+    name: matrix-synapse
+    state: restarted
+
+- name: restart discord-bridge
+  service:
+    name: discord-bridge
+    state: restarted
+
+- name: reload systemctl daemon
+  systemd:
+    daemon_reload: true
