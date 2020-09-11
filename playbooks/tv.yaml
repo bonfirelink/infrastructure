@@ -16,6 +16,9 @@
       copy:
         src: ../config/nginx/tv_site.cfg
         dest: "/etc/nginx/sites-available/{{ tv_fqdn }}.cfg"
+        owner: root
+        group: root
+        mode: 0644
         force: true
     - name: copy the nginx config file for RTMP stream
       blockinfile:

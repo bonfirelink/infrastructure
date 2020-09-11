@@ -40,6 +40,9 @@
   file:
     path: /var/log/auth.log
     state: touch
+    mode: 0644
+    owner: root
+    group: adm
   when:
     - fail2ban_auth.stat.exists is defined
     - not fail2ban_auth.stat.exists
