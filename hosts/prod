@@ -17,5 +17,4 @@ fileservers
 logservers
 
 [webservers:vars]
-ansible_python_interpreter=/usr/bin/python3
 tv_fqdn=tv.bonfire.link
