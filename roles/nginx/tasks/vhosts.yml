@@ -10,6 +10,9 @@
   file:
     path: "{{ nginx_vhost_path }}"
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   notify: reload nginx
 
 - name: add managed vhost config files
