@@ -1,6 +1,6 @@
 user  {{ nginx_user }};
 
-error_log  {{ nginx_error_log }};
+error_log  {{ nginx_conf_error_log }};
 pid        {{ nginx_pidfile }};
 
 {% block worker %}
@@ -22,7 +22,7 @@ http {
     {% block http_begin %}{% endblock %}
 
 {% block http_basic %}
-    include       {{ nginx_conf_mime_file_path }};
+    include       {{ nginx_mime_file_path }};
     default_type  application/octet-stream;
 
     server_names_hash_bucket_size {{ nginx_conf_server_names_hash_bucket_size }};
