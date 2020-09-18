@@ -1,20 +1,11 @@
 [webservers]
-tv.bonfire.link
+www.bonfire.link
+
+[matrixservers]
+matrix.bonfire.link
 
 [streamingservers]
-tv.bonfire.link
-
-[fileservers]
 sandbox.bonfire.link
 
-[logservers]
-sandbox.bonfire.link
-
-[bonfirelink:children]
-webservers
-streamingservers
-fileservers
-logservers
-
-[webservers:vars]
+[streamingservers:vars]
 tv_fqdn=tv.bonfire.link

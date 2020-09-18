@@ -2,17 +2,17 @@
 
 [![](https://github.com/bonfirelink/infrastructure/workflows/linting/badge.svg?branch=master)](https://github.com/bonfirelink/infrastructure/actions?query=workflow%3Alinting+branch%3Amaster)
 
-This repository contains Ansible playbooks to deploy all bonfire.link infrastructure.
+This repository contains Ansible playbooks to configure all bonfire.link virtual machines.
 
 ## usage
 
 Make sure to have the following software installed in your machine before continuing:
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-To deploy the whole bonfire.link infrastructure, run:
+To configure a VM, run a playbook from the `playbooks/` directory. For example, you can configure the web server with:
 
 ```sh
-ansible-playbook -i hosts/prod playbooks/bonfirelink.yaml
+ansible-playbook playbooks/web.yaml
 ```
 
 > **NOTE:** At the moment, your ssh keys need to be manually authorized server-side beforehand.

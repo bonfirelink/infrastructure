@@ -1,0 +1,116 @@
+---
+- hosts: www.bonfire.link
+  become: true
+  roles:
+    - common
+    - fail2ban
+    - certbot
+    - nginx
+  vars:
+    landing_site_path: "/var/www/bonfire.link"
+    notadao_site_path: "/var/www/notadao.bonfire.link"
+    tv_site_path: "/var/www/tv.bonfire.link"
+    landing_release_url: "https://github.com/bonfirelink/websites/archive/landing/v1.0.0-latest.tar.gz"
+    notadao_release_url: "https://github.com/bonfirelink/websites/archive/dao/v1.0.0-latest.tar.gz"
+    tv_release_url: "https://github.com/bonfirelink/websites/archive/tv/v1.0.0-latest.tar.gz"
+    certbot_certs:
+      - domains:
+          - bonfire.link
+          - www.bonfire.link
+      - domains:
+          - notadao.bonfire.link
+      - domains:
+          - tv.bonfire.link
+    nginx_vhosts:
+      - server_name: "bonfire.link"
+        server_name_redirect: "www.bonfire.link"
+        root: "{{ landing_site_path }}"
+        ssl_enabled: true
+        extra_parameters: >
+          # Matrix delegation
+
+          location /.well-known/matrix/server {
+            default_type application/json;
+            return 200   '{"m.server": "matrix.bonfire.link:443"}';
+          }
+      - server_name: "notadao.bonfire.link"
+        root: "{{ notadao_site_path }}"
+        ssl_enabled: true
+      - server_name: "tv.bonfire.link"
+        root: "{{ tv_site_path }}"
+        ssl_enabled: true
+        extra_parameters: >
+          location / {
+            try_files $uri $uri/ =404;
+            add_header "Access-Control-Allow-Origin" *;
+          }
+          location /hls/ {
+            root /tmp;
+            add_header Cache-Control no-cache;
+            add_header "Access-Control-Allow-Origin" *;
+          }
+    nginx_conf_extra_sections: >
+      rtmp {
+        server {
+            listen 1935;
+            notify_method get;
+            chunk_size 4096;
+            application stream {
+                live on;
+                record off;
+                meta copy;
+                wait_key on;
+                wait_video on;
+                idle_streams off;
+                hls on;
+                hls_path /tmp/hls;
+            }
+        }
+      }
+  tasks:
+    - name: create sites directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        mode: 0755
+      loop:
+        - "{{ landing_site_path }}"
+        - "{{ notadao_site_path }}"
+        - "{{ tv_site_path }}"
+    - name: pull latest version of websites
+      unarchive:
+        src: "{{ item.0 }}"
+        dest: "{{ item.1 }}"
+        remote_src: true
+        extra_opts: [--strip-components=1]
+        owner: www-data
+        mode: 0644
+      loop:
+        - "{{ [landing_release_url, landing_site_path] }}"
+        - "{{ [notadao_release_url, notadao_site_path] }}"
+        - "{{ [tv_release_url, tv_site_path] }}"
+    - name: open rtmp port
+      ufw:
+        rule: allow
+        port: "1935"
+    - name: load rtmp nginx module
+      become: true
+      command:
+        cmd: echo "load_module modules/ngx_rtmp_module.so" > /etc/nginx/modules-enabled/50-mod-rtmp.conf;
+      changed_when: true
+    - name: install streaming nginx packages
+      apt:
+        name:
+          - libnginx-mod-rtmp
+          - libnginx-mod-stream
+          - ffmpeg
+        state: present
+        update_cache: true
+      notify: reload nginx
+    - name: create temp hls folder
+      file:
+        path: "/tmp/hls"
+        state: directory
+        owner: www-data
+        mode: 0777
