@@ -50,7 +50,8 @@ nginx_conf_extra_http_options: ""
 nginx_remove_default_vhost: true
 nginx_vhosts: []
 # Example vhost below, showing all available options:
-# - listen: "80" # default: "80"
+# - listen_http: "80" # default: "80"
+#   listen_https: "443" # default "443"
 #   server_name: "example.com" # default: N/A
 #   root: "/var/www/example.com" # default: N/A
 #   index: "index.html index.htm" # default: "index.html index.htm"
@@ -58,6 +59,7 @@ nginx_vhosts: []
 #
 #   # Properties that are only added if defined:
 #   server_name_redirect: "www.example.com" # default: N/A
+#   ssl_enabled: true # default: N/A
 #   error_page: ""
 #   access_log: ""
 #   error_log: ""
