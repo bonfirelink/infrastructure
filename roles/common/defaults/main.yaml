@@ -1,0 +1,20 @@
+---
+http_port: "80"
+https_port: "443"
+ssh_port: "22"
+
+common_packages:
+  - acl
+  - ufw
+  - ssh
+  # required by `ansible-playbook --check`
+  - python-apt
+
+common_ports:
+  - "{{ ssh_port }}"
+  - "{{ http_port }}"
+  - "{{ https_port }}"
+
+allowed_ports: []
+# - "21"
+# - "8080"

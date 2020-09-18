@@ -1,0 +1,18 @@
+---
+- name: install common packages
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+    update_cache: true
+
+- name: open ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop: "{{ common_ports|zip(allowed_ports)|list }}"
+
+- name: close ports and enable firewall
+  ufw:
+    state: enabled
+    policy: deny
+    logging: "off"
