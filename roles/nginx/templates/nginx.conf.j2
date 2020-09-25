@@ -80,3 +80,7 @@ http {
 
     {% block http_end %}{% endblock %}
 }
+
+{% if nginx_conf_extra_sections is defined %}
+    {{ nginx_conf_extra_sections|indent(4) }}
+{% endif %}
