@@ -17,6 +17,20 @@ ansible-playbook playbooks/web.yaml
 
 > **NOTE:** At the moment, your ssh keys need to be manually authorized server-side beforehand.
 
+### vault
+
+Some of the playbooks contain encrypted variables. To be able to run these playbooks, you will need to set up first the Ansible Vault password file with:
+
+```sh
+make pass-save
+```
+
+This command will save the Ansible Vault password used to decrypt the variables in plain text file. Once you are done, remember to delete it with:
+
+```sh
+make pass-clean
+```
+
 ## development
 
 For development, instead of deploying and testing your Ansible playbooks, you will preferably do so in a local virtual machine.
