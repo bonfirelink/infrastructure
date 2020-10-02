@@ -12,5 +12,5 @@ certbot_standalone_command: >-
   {{ certbot_script }} certonly --standalone --noninteractive --agree-tos
   --email {{ cert.email | default(certbot_admin_email) }}
   --domains {{ cert.domains | join(',') }}
-  --pre-hook "systemctl stop nginx"
-  --post-hook "systemctl start nginx"
+  --pre-hook "systemctl --quiet stop nginx"
+  --post-hook "systemctl --quiet start nginx"

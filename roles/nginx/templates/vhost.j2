@@ -62,8 +62,6 @@ server {
 {% if item.ssl_enabled is defined %}
     ssl_certificate     /etc/letsencrypt/live/{{ item.server_name }}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/{{ item.server_name }}/privkey.pem;
-    include             /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
 {% endif %}
 {% endblock %}
 
