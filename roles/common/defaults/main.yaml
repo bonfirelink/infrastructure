@@ -18,3 +18,7 @@ common_ports:
 allowed_ports: []
 # - "21"
 # - "8080"
+
+users:
+  - omegak
+  - simon

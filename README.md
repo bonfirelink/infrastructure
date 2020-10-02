@@ -15,7 +15,11 @@ To configure a VM, run a playbook from the `playbooks/` directory. For example, 
 ansible-playbook playbooks/web.yaml
 ```
 
-> **NOTE:** At the moment, your ssh keys need to be manually authorized server-side beforehand.
+SSH keys will be deployed on the first run, but the first run most be done as `root`. To do so, add the next flags to the `ansible-playbook` command:
+
+```sh
+-u root --ask-pass
+```
 
 ### vault
 
