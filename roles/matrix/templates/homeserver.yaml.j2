@@ -684,10 +684,12 @@ caches:
 #
 # For more information on using Synapse with Postgres, see `docs/postgres.md`.
 #
-database:
-  name: sqlite3
-  args:
-    database: /var/lib/matrix-synapse/homeserver.db
+#database:
+#  name: sqlite3
+#  args:
+#    database: /var/lib/matrix-synapse/homeserver.db
+#
+# XXX: Handled in conf.d/database.yaml
 
 
 ## Logging ##

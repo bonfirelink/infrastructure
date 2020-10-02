@@ -1,6 +1,18 @@
 ---
 
-- name: add nodejs to apt repositories
+- name: install dependencies for apt_key
+  apt:
+    name:
+      - gnupg
+    state: present
+
+- name: import nodejs gpg key into apt
+  apt_key:
+    url: https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280
+    id: "68576280"
+    state: present
+
+- name: add nodejs apt repository
   apt_repository:
     repo: "{{ item }}"
     state: present
@@ -17,7 +29,6 @@
       - mcrypt
       - nodejs
     state: present
-    update_cache: true
 
 - name: create discord bridge directory
   file:
@@ -68,15 +79,12 @@
   register: discord_registration
 
 - name: generate discord bridge registration file
-  when: discord_registration.stat.exists is not defined
+  when: discord_registration.stat.exists is false
   become: true
   become_user: "{{ matrix_user }}"
   command:
     cmd: node build/src/discordas.js -r -u "http://localhost:9005" -c config.yaml
     chdir: "{{ discord_bridge_installation_path }}"
-  notify: restart matrix-synapse
-
-- name: start discord bridge
-  service:
-    name: discord-bridge
-    state: restarted
+  notify:
+    - restart matrix-synapse
+    - restart discord-bridge

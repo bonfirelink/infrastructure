@@ -50,7 +50,7 @@ discord_bridge_bot_token: foobar
 ####### Database ######
 #######################
 
-# Install and configure Synapse with PostgreSQL Server, instead of SQLite.
+# Install and configure Synapse with PostgreSQL Server, instead of SQLite
 synapse_with_postgresql: false
 
 # PostgreSQL credentials
