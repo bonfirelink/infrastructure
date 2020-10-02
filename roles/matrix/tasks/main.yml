@@ -6,9 +6,9 @@
     shell: /bin/false
     state: present
 
+- include_tasks: postgresql.yml
+  when: synapse_with_postgresql | bool
+
 - include_tasks: synapse.yml
 
 - include_tasks: discord.yml
-
-- include_tasks: postgresql.yml
-  when: synapse_with_postgresql | bool
