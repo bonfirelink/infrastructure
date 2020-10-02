@@ -8,11 +8,17 @@
     state: present
     update_cache: true
 
-- name: open ports
+- name: open common ports
   ufw:
     rule: allow
     port: "{{ item }}"
-  loop: "{{ common_ports|zip(allowed_ports)|list }}"
+  loop: "{{ common_ports }}"
+
+- name: open other allowed ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop: "{{ allowed_ports }}"
 
 - name: close ports and enable firewall
   ufw:
