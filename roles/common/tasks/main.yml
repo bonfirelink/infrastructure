@@ -1,4 +1,7 @@
 ---
+
+- include_tasks: auth.yml
+
 - name: install common packages
   apt:
     name: "{{ common_packages }}"
