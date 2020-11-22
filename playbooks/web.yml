@@ -11,7 +11,7 @@
     notadao_site_path: "/var/www/notadao.bonfire.link"
     tv_site_path: "/var/www/tv.bonfire.link"
     landing_release_url: "https://github.com/bonfirelink/websites/archive/landing/v1.0.0-latest.tar.gz"
-    notadao_release_url: "https://github.com/bonfirelink/websites/archive/dao/v1.0.0-latest.tar.gz"
+    notadao_release_url: "https://github.com/bonfirelink/websites/archive/notadao/v1.0.0-latest.tar.gz"
     tv_release_url: "https://github.com/bonfirelink/websites/archive/tv/v1.0.0-latest.tar.gz"
     certbot_certs:
       - domains:
